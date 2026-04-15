@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Man Utd Squad Number Quiz</title>
+    <style>
+        :root {
+            --mu-red: #DA291C;
+            --mu-yellow: #FBE122;
+            --mu-black: #000000;
+            --mu-white: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--mu-black);
+            color: var(--mu-white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #game-container {
+            background-color: var(--mu-red);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            border: 4px solid var(--mu-yellow);
+        }
+
+        h1 {
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px var(--mu-black);
+        }
+
+        #player-display {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 2.5rem;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 10px;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background-color: var(--mu-black);
+            color: var(--mu-yellow);
+            border: 2px solid var(--mu-yellow);
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            background-color: var(--mu-yellow);
+            color: var(--mu-black);
+        }
+
+        #feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            height: 1.2rem;
+        }
+
+        #score-board {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--mu-white);
+        }
+
+        .download-link {
+            display: block;
+            margin-top: 20px;
+            color: var(--mu-yellow);
+            text-decoration: none;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .download-link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <h1>Squad Quiz</h1>
+        <div id="player-display">Loading...</div>
+        
+        <input type="number" id="guess-input" placeholder="GGMU" min="1" max="99">
+        <br>
+        <button onclick="checkAnswer()">Submit Guess</button>
+
+        <div id="feedback"></div>
+        <div id="score-board">Score: <span id="score">0</span></div>
+
+        <a href="#" id="squad_game" class="download-link">squad game v1.0</a>
+    </div>
+
+    <script>
+        // Current First Team Roster (General Data)
+        const players = [
+            { name: "Senne Lammens", number: 31 },
+            { name: "Altay Bayindir", number: 1 },
+            { name: "Diogo Dalot", number: 20 },
+            { name: "Harry Maguire", number: 5 },
+            { name: "Lisandro Martínez", number: 6 },
+            { name: "Luke Shaw", number: 23 },
+            { name: "Tyrell Malacia", number: 12 },
+            { name: "Victor Lindelöf", number: 2 },
+            { name: "Noussair Mazraoui", number: 3 },
+            { name: "Matthijs de Ligt", number: 4 },
+            { name: "Leny Yoro", number: 15 },
+            { name: "Casemiro", number: 18 },
+            { name: "Patrick Dorgu", number: 13 },
+            { name: "Bruno Fernandes", number: 8 },
+            { name: "Mason Mount", number: 7 },
+            { name: "Kobbie Mainoo", number: 37 },
+            { name: "Manuel Ugarte", number: 25 },
+            { name: "Bryan Mbeumo", number: 19 },
+            { name: "Benjamin Sesko", number: 30 },
+            { name: "Matheus Cunha", number: 10 },
+            { name: "Rasmus Højlund", number: 9 },
+            { name: "Amad Diallo", number: 16 },
+            { name: "Joshua Zirkzee", number: 11 }
+        ];
+
+        let currentPlayer = {};
+        let score = 0;
+
+        const playerText = document.getElementById('player-display');
+        const guessInput = document.getElementById('guess-input');
+        const feedback = document.getElementById('feedback');
+        const scoreDisplay = document.getElementById('score');
+
+        function nextPlayer() {
+            const randomIndex = Math.floor(Math.random() * players.length);
+            currentPlayer = players[randomIndex];
+            playerText.innerText = currentPlayer.name;
+            guessInput.value = '';
+            feedback.innerText = '';
+            guessInput.focus();
+        }
+
+        function checkAnswer() {
+            const userGuess = parseInt(guessInput.value);
+            
+            if (userGuess === currentPlayer.number) {
+                feedback.style.color = "var(--mu-yellow)";
+                feedback.innerText = "Correct! Glory Glory!";
+                score++;
+                scoreDisplay.innerText = score;
+                setTimeout(nextPlayer, 1500);
+            } else {
+                feedback.style.color = "var(--mu-black)";
+                feedback.innerText = `Wrong! It's actually ${currentPlayer.number}`;
+                setTimeout(nextPlayer, 2000);
+            }
+        }
+
+        // Allow "Enter" key to submit
+        guessInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                checkAnswer();
+            }
+        });
+
+        // Initialize game
+        nextPlayer();
+    </script>
+</body>
+</html>
